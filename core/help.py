@@ -59,6 +59,7 @@ def use_payload():
     print("=============")
     print("show options                 Show options of payload")
     print("set [options] [value]        Set value for payload's options")
+    print("execute        		Execute the payload")
     # print("log                          Show log file")
     print("clr                          Clear screen")
     print("back                         ack to exploit function")
