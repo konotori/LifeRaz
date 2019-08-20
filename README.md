@@ -20,4 +20,5 @@ git clone https://github.com/tungto2006/LifeRaz.git; cd LifeRaz; pip3 install -r
 # Usage
 
 Run with sudo sudo privileges
-[Example](https://media.giphy.com/media/UrsOqBQ0nQJQDzECBZ/giphy.gif)
+
+[![](https://media.giphy.com/media/UrsOqBQ0nQJQDzECBZ/giphy.gif)
