@@ -2,7 +2,7 @@
 
 LifeRaz is the Scaning and Exploiting Vulnerable Tool for website using Liferay Portal code by Python 3
 
-With Java Deserialization vulnerable, this tool use [ysoserial](https://github.com/frohoff/ysoserial) to generate payload
+With Java Deserialization Vulnerable, this tool use [ysoserial](https://github.com/frohoff/ysoserial) to generate payload
 
 |Tested on|.
 |---|---
