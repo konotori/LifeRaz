@@ -33,7 +33,7 @@ def ping_deserialization(url):
     url_reformat = re.sub('.*://', '', url)
     url_reformat = re.sub('([:/]).*', '', url_reformat)
     target_ip = socket.gethostbyname(url_reformat)
-    list_ping = ["CommonsBeanUtils", "CommonsCollections1", "CommonsCollections2", "CommonsCollections3",
+    list_ping = ["CommonsBeanutils1", "CommonsCollections1", "CommonsCollections2", "CommonsCollections3",
                  "CommonsCollections4", "Jdk7u21", "Json1", "ROME", "Spring1", "Spring2", "BeanShell1",
                  "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
                  "Hibernate1", "Hibernate2", "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
@@ -143,5 +143,5 @@ def main(url):
         print("[!] Name or service not known!")
     except exception.InvalidURL and exception.MissingSchema:
         print("[!] Invalid Url - Url must start with http(s)!")
-    except:
-        print("[!] Something get error - See the log file!")
+    except Exception as ex:
+        print(ex)
