@@ -7,7 +7,7 @@ With Java Deserialization vulnerable, this tool use [ysoserial](https://github.c
 |Tested on|.
 |---|---
 |Ubuntu|Working
-|Windows|Working.
+|Windows|Working
 
 ## Vulnerabilities
 |Name|Description
