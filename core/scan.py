@@ -160,7 +160,7 @@ class Scan:
 
     def main(self):
         try:
-            if self.url != "None" and self.mode == "sleep" and "dns":
+            if self.url != "None" and self.mode == "sleep" or "dns":
                 # Gathering information of target
                 if info_gathering(self.url) is True:
                     # Vulnerabilities of target
