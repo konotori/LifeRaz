@@ -38,7 +38,6 @@ def pre_main():
 
     hostname = socket.gethostname()
     ip_add = socket.gethostbyname(hostname)
-    ip_add = "42.112.213.82"
     # ping_list = ["BeanShell1", "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
     #              "Hibernate1",
     #              "Hibernate2",
@@ -147,10 +146,20 @@ def scan():
     terminal = input(path_func).lower()
     if terminal == "help":
         help.scan()
-    elif terminal == "set":
-        print('\033[93m' + "ex: http(s)://example.com.vn")
-        url = input("Input url: ").lower()
-        sc.main(url)
+    elif terminal[0:3] == "set":
+        list_input = terminal.split(" ")
+        scan_option = list_input[1].strip()
+        scan_method = scan_option + '_gs'
+        if sc.check_exist_option(scan_option):
+            option_value = list_input[2].strip()
+            setattr(sc.scan, scan_method, option_value)
+        else:
+            print("Option is not defined")
+            scan()
+    elif terminal == "execute":
+        sc.scan.main()
+    elif terminal == "show options":
+        sc.scan.show_options()
     elif terminal == "back":
         main()
     elif terminal == "clr":
@@ -179,6 +188,7 @@ def main():
             help.home()
             main()
         elif terminal == "scan":
+            sc.scan_choose()
             scan()
         elif terminal == "exploit":
             exploit()
@@ -204,7 +214,7 @@ def main():
 
 if __name__ == '__main__':
     if not os.geteuid() == 0:
-        sys.exit("LifeRaz requires root access!")
+        sys.exit("LifeRaz requires root privileges!")
     logging_config()
     pre_main()
     header.show()

