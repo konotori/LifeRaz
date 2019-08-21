@@ -31,4 +31,62 @@ git clone https://github.com/tungto2006/LifeRaz.git; cd LifeRaz; pip3 install -r
 
 Run with **sudo** privileges
 
-[![](https://media.giphy.com/media/UrsOqBQ0nQJQDzECBZ/giphy.gif)
+```
+                     | |      (_)  / _|        |  __ \               
+                     | |       _  | |_    ___  | |__) |   __ _   ____
+                     | |      | | |  _|  / _ \ |  _  /   / _` | |_  /
+                     | |____  | | | |   |  __/ | | \ \  | (_| |  / / 
+                     |______| |_| |_|    \___| |_|  \_\  \__,_| /___|
+    
+                 ====] Liferay Portal Scaning and Exploiting tool [====                 
+                             ====] Version: BETA 1.0.0 [====                              
+                                       @Code by ...                                       
+
+lse> help
+
+Core Commands
+=============
+
+Command         Description
+-------         -----------
+help            Print out help
+scan            Scan url information and vulnerability
+exploit         Exploit vulnerability
+clr             Clear screen
+clean           Clean log files
+exit            Exit framework
+
+lse> scan
+lse(scan)> help
+
+Core Commands
+=============
+set                  Set url to scan
+execute              Execute scanning
+show options         Show options of scanning
+clr                  Clear screen
+back                 Back to home
+clean                Clean log files
+exit                 Exit framework
+
+lse(scan)> back
+lse> exploit
+lse(exploit)> help
+
+Core Commands
+=============
+show [option]        Show information of payload
+                     [all] - List payloads
+                     [order] - Information of payload
+use                  Choose payload to exploit
+clr                  Clear screen
+back                 Back to home
+clean                Clean log files
+exit                 Exit framework
+
+```
+
+# Example
+## Scan
+![](https://i.ibb.co/2WkFN63/Screenshot-from-2019-08-21-22-06-39.jpg)
+
