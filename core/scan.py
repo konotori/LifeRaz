@@ -25,7 +25,6 @@ def catch_dns_query():
     try:
         while True:
             data = sock.recvfrom(512)
-            # target_ip = data[1][0]
             if "google" in str(data):
                 return True
             else:
@@ -52,8 +51,7 @@ def ping_deserialization(url):
         rq = session.post(url, data=payload, verify=False)
         if catch_dns_query():
             print('\033[91m' + '    [+] {} lib can be POTENTIAL vulnerable'.format(name.strip()))
-    # else:
-    #     print('    [-] {} lib is NOT vulnerable'.format(name.strip()))
+
 
 
 # Java Deserialization Sleep Scan
@@ -67,9 +65,6 @@ def sleep_deserialization(url):
         print(name + '-' + str(rq.elapsed.total_seconds()))
         if rq.elapsed.total_seconds() >= 10:
             print('\033[91m' + "    [+] {} lib can be POTENTIAL vulnerable".format(name))
-        # else:
-        #     print('    [-] {} lib is NOT vulnerable'.format(name.strip()))
-        session.close()
         time.sleep(0.5)
 
 
