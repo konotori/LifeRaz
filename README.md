@@ -38,7 +38,7 @@ Run with **sudo** privileges
                      | |____  | | | |   |  __/ | | \ \  | (_| |  / / 
                      |______| |_| |_|    \___| |_|  \_\  \__,_| /___|
     
-                 ====] Liferay Portal Scanner and Exploitation tool [====                 
+                 ====] Liferay Portal Scaning and Exploiting tool [====                 
                              ====] Version: BETA 1.0.0 [====                              
                                        @Code by ...                                       
 
