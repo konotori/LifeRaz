@@ -103,9 +103,10 @@ def opensearch(url):
 def json_api(url):
     rq = session.get(url + "/api/jsonws/user/get-user-by-id", verify=False)
     if rq.status_code == 200:
-        print("[!] May have [LPS-26935] All JSON web services are accessible without authentication ")
+        print('\033[93m' + "[!] May have [LPS-26935] All JSON web services are accessible without authentication ")
     else:
         print("~> None")
+    print("")
 
 
 def info_gathering(url):
