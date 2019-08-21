@@ -76,7 +76,6 @@ def sleep_deserialization(url):
 # [LPS-27146] Guests can view names of all Liferay users
 def opensearch(url):
     print('\033[93m' + "[!] OpenSearch Gathering" + '\033[91m')
-    print("")
     alphabet = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x',
                 'y']
     user_info = dict()
@@ -121,7 +120,7 @@ def info_gathering(url):
         print('\033[91m' + "[!] This website is not using Liferay or cannot detect! ")
         return False
     else:
-        print("\n==== Information ====")
+        print('\033[94m' + "\n==== Information ====")
         print('\033[91m' + "Sever: " + server)
         print('\033[91m' + "Version: " + version)
         print("")
@@ -163,7 +162,7 @@ class Scan:
                 # Gathering information of target
                 if info_gathering(self.url) is True:
                     # Vulnerabilities of target
-                    print('\033[93m' + "==== Vulnerabilities ====")
+                    print('\033[94m' + "==== Vulnerabilities ====" + '\033[94m')
                     if "6.1.0" or "6.0.12" or "6.1.10" or "6.2.0" in version:
                         json_api(self.url)
                     if "6.1.0" in version:
@@ -188,6 +187,7 @@ class Scan:
                             ping_deserialization(entry_point1)
                     else:
                         print("~> None")
+                    print("")
             else:
                 print("[!] Required option is not set !")
         except exception.ConnectionError:
