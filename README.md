@@ -31,9 +31,9 @@ git clone https://github.com/tungto2006/LifeRaz.git; cd LifeRaz; pip3 install -r
 
 Run with **sudo** privileges
 
-[![](https://media.giphy.com/media/UrsOqBQ0nQJQDzECBZ/giphy.gif)
+![](https://media.giphy.com/media/UrsOqBQ0nQJQDzECBZ/giphy.gif)
 
 # Example
 ## Scan
-[![](https://i.ibb.co/2WkFN63/Screenshot-from-2019-08-21-22-06-39.jpg)
+![](https://i.ibb.co/2WkFN63/Screenshot-from-2019-08-21-22-06-39.jpg)
 
