@@ -83,7 +83,7 @@ def opensearch(url):
     user_info = dict()
     for char in alphabet:
         rq = session.get(url + "/c/search/open_search?p=1&c=5000&keywords=emailAddress:{}*".format(char),
-                         verify=False)
+                         verify=False, timeout=10)
         soup = Soup(rq.text, 'xml')
         entry = soup.find_all("entry")
         for attr in entry:
