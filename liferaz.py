@@ -165,7 +165,7 @@ def scan():
     elif terminal == "clr":
         os.system("clear")
         header.show()
-        main()
+        scan()
     elif terminal == "clean":
         shutil.rmtree("{}/log".format(os.getcwd()))
         print("-> Clean logs successfully!")
