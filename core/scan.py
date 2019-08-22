@@ -115,7 +115,9 @@ def info_gathering(url):
         rq = session.get(url + '/api/jsonws', timeout=10, verify=False)
         version = rq.headers.get('Liferay-Portal')
         if version is None and check_liferay is False:
+            print('\033[94m' + "\n==== Information ====")
             print('\033[91m' + "[!] This website is not using Liferay or cannot detect!")
+            print("")
             return False
         elif version is None and check_liferay is True:
             print('\033[91m' + "[!] This website is using Liferay but cannot detect version!")
