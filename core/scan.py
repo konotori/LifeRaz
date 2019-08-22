@@ -168,10 +168,11 @@ class Scan:
                 if info_gathering(self.url) is True:
                     # Vulnerabilities of target
                     print('\033[94m' + "==== Vulnerabilities ====" + '\033[94m')
-                    if "6.1.0" or "6.0.12" or "6.1.10" or "6.2.0" in version or version is None:
-                        json_api(self.url)
-                    if "6.1.0" in version or version is None:
-                        opensearch(self.url)
+                    if version is not None:
+                        if "6.1.0" or "6.0.12" or "6.1.10" or "6.2.0" in version:
+                            json_api(self.url)
+                        if "6.1.0" in version:
+                            opensearch(self.url)
                     entry_point1 = self.url + "////api/liferay"
                     entry_point2 = self.url + "////api/spring"
                     if session.post(entry_point1, timeout=10, verify=False).status_code == 200:
