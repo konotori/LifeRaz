@@ -164,9 +164,9 @@ class Scan:
                 if info_gathering(self.url) is True:
                     # Vulnerabilities of target
                     print('\033[94m' + "==== Vulnerabilities ====" + '\033[94m')
-                    if "6.1.0" or "6.0.12" or "6.1.10" or "6.2.0" in version:
+                    if "6.1.0" or "6.0.12" or "6.1.10" or "6.2.0" in version or version is None:
                         json_api(self.url)
-                    if "6.1.0" in version:
+                    if "6.1.0" in version or version is None:
                         opensearch(self.url)
                     entry_point1 = self.url + "////api/liferay"
                     entry_point2 = self.url + "////api/spring"
