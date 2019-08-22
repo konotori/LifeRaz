@@ -111,7 +111,7 @@ def info_gathering(url):
     server = rq.headers['Server']
     version = rq.headers.get('Liferay-Portal')
     if "liferay" in rq.text:
-        check_liferay == True
+        check_liferay = True
     if version is None:
         rq = session.get(url + '/api/jsonws', timeout=10, verify=False)
         version = rq.headers.get('Liferay-Portal')
