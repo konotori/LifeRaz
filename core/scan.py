@@ -120,7 +120,9 @@ def info_gathering(url):
             print("")
             return False
         elif version is None and check_liferay is True:
+            print('\033[94m' + "\n==== Information ====")
             print('\033[91m' + "[!] This website is using Liferay but cannot detect version!")
+            print("")
             return True
         else:
             print('\033[94m' + "\n==== Information ====")
