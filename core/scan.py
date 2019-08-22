@@ -105,21 +105,28 @@ def json_api(url):
 
 def info_gathering(url):
     global version
+    global check_liferay
+    check_liferay = False
     rq = session.get(url, timeout=10, verify=False)
     server = rq.headers['Server']
     version = rq.headers.get('Liferay-Portal')
+    if "liferay" in rq.text:
+        check_liferay == True
     if version is None:
         rq = session.get(url + '/api/jsonws', timeout=10, verify=False)
         version = rq.headers.get('Liferay-Portal')
-    if version is None:
-        print('\033[91m' + "[!] This website is not using Liferay or cannot detect!")
-        return False
-    else:
-        print('\033[94m' + "\n==== Information ====")
-        print('\033[91m' + "Sever: " + server)
-        print('\033[91m' + "Version: " + version)
-        print("")
-        return True
+        if version is None and check_liferay is False:
+            print('\033[91m' + "[!] This website is not using Liferay or cannot detect!")
+            return False
+        elif version is None and check_liferay is True:
+            print('\033[91m' + "[!] This website is using Liferay but cannot detect version!")
+            return True
+        else:
+            print('\033[94m' + "\n==== Information ====")
+            print('\033[91m' + "Sever: " + server)
+            print('\033[91m' + "Version: " + version)
+            print("")
+            return True
 
 
 class Scan:
@@ -158,9 +165,9 @@ class Scan:
                 if info_gathering(self.url) is True:
                     # Vulnerabilities of target
                     print('\033[94m' + "==== Vulnerabilities ====" + '\033[94m')
-                    if "6.1.0" or "6.0.12" or "6.1.10" or "6.2.0" in version:
+                    if "6.1.0" or "6.0.12" or "6.1.10" or "6.2.0" in version or check_liferay is True:
                         json_api(self.url)
-                    if "6.1.0" in version:
+                    if "6.1.0" in version or check_liferay is True:
                         opensearch(self.url)
                     entry_point1 = self.url + "////api/liferay"
                     entry_point2 = self.url + "////api/spring"
