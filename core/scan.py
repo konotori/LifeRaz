@@ -53,7 +53,6 @@ def ping_deserialization(url):
             print('\033[91m' + '    [+] {} lib can be POTENTIAL vulnerable'.format(name.strip()))
 
 
-
 # Java Deserialization Sleep Scan
 def sleep_deserialization(url):
     print("[Sleep scan]")
@@ -182,10 +181,14 @@ class Scan:
                         elif self.mode == "dns":
                             ping_deserialization(entry_point1)
                     else:
-                        print("~> None")
+                        print('\033[93m' + "[!] [LPS-64441] Java Serialization Vulnerability")
+                        print('\033[93m' + "~> None")
                     print("")
             else:
                 print("[!] Required option is not set!")
+        except IndexError:
+            print("[!] Url is empty!")
+            logging.error("[!] Url is empty!")
         except exception.ConnectionError:
             print("[!] Name or service not known!")
             logging.error("[!] Name or service not known!")
