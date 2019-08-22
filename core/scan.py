@@ -98,7 +98,7 @@ def opensearch(url):
 def json_api(url):
     rq = session.get(url + "/api/jsonws/user/get-user-by-id", verify=False)
     if rq.status_code == 200:
-        print('\033[93m' + "[!] May have [LPS-26935] All JSON web services are accessible without authentication ")
+        print('\033[93m' + "[!] May have [LPS-26935] All JSON web services are accessible without authentication")
     else:
         print("~> None")
     print("")
@@ -113,7 +113,7 @@ def info_gathering(url):
         rq = session.get(url + '/api/jsonws', timeout=10, verify=False)
         version = rq.headers.get('Liferay-Portal')
     if version is None:
-        print('\033[91m' + "[!] This website is not using Liferay or cannot detect! ")
+        print('\033[91m' + "[!] This website is not using Liferay or cannot detect!")
         return False
     else:
         print('\033[94m' + "\n==== Information ====")
@@ -164,7 +164,7 @@ class Scan:
                     if "6.1.0" in version:
                         opensearch(self.url)
                     entry_point1 = self.url + "////api/liferay"
-                    entry_point2 = self.url + "////api/liferay"
+                    entry_point2 = self.url + "////api/spring"
                     if session.post(entry_point1, timeout=10, verify=False).status_code == 200:
                         print(
                             '\033[93m' + "[!] Liferay API allow POST request - May have [LPS-64441] Java Serialization "
@@ -185,7 +185,7 @@ class Scan:
                         print("~> None")
                     print("")
             else:
-                print("[!] Required option is not set !")
+                print("[!] Required option is not set!")
         except exception.ConnectionError:
             print("[!] Name or service not known!")
             logging.error("[!] Name or service not known!")
