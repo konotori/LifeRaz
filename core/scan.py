@@ -34,8 +34,7 @@ def catch_dns_query():
                     return True
                 else:
                     return False
-            except Exception as ex:
-                print(ex)
+            except:
                 return False
 
 
@@ -204,6 +203,9 @@ class Scan:
                     print("")
             else:
                 print("[!] Required option is not set!")
+        except OSError:
+            print("[!] Port 53 already in use!")
+            logging.error("[!] Port 53 already in use!")
         except IndexError:
             print("[!] Url is empty!")
             logging.error("[!] Url is empty!")
