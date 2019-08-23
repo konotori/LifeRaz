@@ -207,6 +207,8 @@ def main():
             print("Command not found")
             main()
         main()
+    except IndexError:
+        print("Option cannot empty")
     except KeyboardInterrupt:
         print('\n')
         return main()

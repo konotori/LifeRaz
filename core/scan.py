@@ -17,8 +17,6 @@ session.headers.update({
 
 # Fake DNS server to catch query while sending DNS java deserialization payloads
 def catch_dns_query():
-    time_start = time.time()
-    print(time_start)
     check = True
     port = 53
     hostname = socket.gethostname()
@@ -30,7 +28,6 @@ def catch_dns_query():
         while True:
             data, add = sock.recvfrom(1024)
             dns = DNSRecord.parse(data)
-            print(dns.questions)
             if "google" in str(dns.questions):
                 break
     except socket.timeout:
@@ -68,7 +65,7 @@ def sleep_deserialization(url):
     for name in list_sleep:
         payload = open('core/payload_sleep/{}.bin'.format(name), 'rb')
         rq = session.post(url, data=payload, verify=False)
-        print(name + '-' + str(rq.elapsed.total_seconds()))
+        # print(name + '-' + str(rq.elapsed.total_seconds()))
         if rq.elapsed.total_seconds() >= 10:
             print('\033[91m' + "    [+] {} lib can be POTENTIAL vulnerable".format(name))
         time.sleep(0.5)
