@@ -17,7 +17,7 @@ session.headers.update({
 
 # Fake DNS server to catch query while sending DNS java deserialization payloads
 def catch_dns_query():
-    global dns
+    rs = ""
     time_start = time.time()
     check = True
     port = 53
@@ -30,11 +30,12 @@ def catch_dns_query():
         while True:
             data, add = sock.recvfrom(1024)
             dns = DNSRecord.parse(data)
+            rs = dns.question()
             for ques in dns.questions:
                 r = dns.reply()
                 sock.sendto(r.pack(), add)
     except socket.timeout:
-        if "google" in str(dns.questions):
+        if "google" in str(rs):
             return True
         else:
             return False
