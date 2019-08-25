@@ -30,7 +30,7 @@ def catch_dns_query():
         while True:
             data, add = sock.recvfrom(1024)
             dns = DNSRecord.parse(data)
-            rs = dns.question()
+            rs = dns.questions
             for ques in dns.questions:
                 r = dns.reply()
                 sock.sendto(r.pack(), add)
