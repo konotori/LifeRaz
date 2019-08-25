@@ -109,31 +109,23 @@ def json_api(url):
 
 def info_gathering(url):
     global version
-    check_liferay = False
     rq = session.get(url, timeout=10, verify=False)
     server = rq.headers['Server']
     version = rq.headers.get('Liferay-Portal')
-    if "liferay" in rq.text:
-        check_liferay = True
     if version is None:
         rq = session.get(url + '/api/jsonws', timeout=10, verify=False)
         version = rq.headers.get('Liferay-Portal')
-        if version is None and check_liferay is False:
+        if version is None:
             print('\033[94m' + "\n==== Information ====")
             print('\033[91m' + "[!] This website is not using Liferay or cannot detect!")
             print("")
             return False
-        elif version is None and check_liferay is True:
-            print('\033[94m' + "\n==== Information ====")
-            print('\033[91m' + "[!] This website is using Liferay but cannot detect version!")
-            print("")
-            return True
-        else:
-            print('\033[94m' + "\n==== Information ====")
-            print('\033[91m' + "Sever: " + server)
-            print('\033[91m' + "Version: " + version)
-            print("")
-            return True
+    else:
+        print('\033[94m' + "\n==== Information ====")
+        print('\033[91m' + "Sever: " + server)
+        print('\033[91m' + "Version: " + version)
+        print("")
+        return True
 
 
 class Scan:
