@@ -204,14 +204,11 @@ class Scan:
         except Exception as ex:
             print("[!] Something get error see the log file!")
             logging.error(ex)
-        finally:
-            sock.close()
 
 # Generate scan object
 def scan_choose():
     global scan
     scan = Scan("None", "sleep")
-
 
 # Check if vulnerability's option exists
 def check_exist_option(scan_option):

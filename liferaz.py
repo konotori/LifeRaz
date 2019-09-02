@@ -81,8 +81,11 @@ def use_payload():
         elif terminal == "back":
             exploit()
         elif terminal == "clean":
-            shutil.rmtree("{}/log".format(os.getcwd()))
-            print("~> Clean logs successfully!")
+            try:
+                shutil.rmtree("{}/log".format(os.getcwd()))
+                print("-> Clean logs successfully!")
+            except FileNotFoundError:
+                print("-> No logs to clean!")
         elif terminal == "exit":
             sys.exit(0)
         else:
@@ -118,13 +121,16 @@ def exploit():
             if terminal[3:].strip().isdigit():
                 payload_order = int(terminal[3:])
                 latest_url = "http(s)://example.com.vn"
-                ex.payload_choose(latest_url, payload_order)
+                ex.payload_choose(payload_order)
                 use_payload()
         elif terminal == "back":
             main()
         elif terminal == "clean":
-            shutil.rmtree("{}/log".format(os.getcwd()))
-            print("-> Clean logs successfully!")
+            try:
+                shutil.rmtree("{}/log".format(os.getcwd()))
+                print("-> Clean logs successfully!")
+            except FileNotFoundError:
+                print("-> No logs to clean!")
         elif terminal == "exit":
             sys.exit(0)
         elif terminal == "clr":
@@ -167,8 +173,11 @@ def scan():
         header.show()
         scan()
     elif terminal == "clean":
-        shutil.rmtree("{}/log".format(os.getcwd()))
-        print("-> Clean logs successfully!")
+        try:
+            shutil.rmtree("{}/log".format(os.getcwd()))
+            print("-> Clean logs successfully!")
+        except FileNotFoundError:
+            print("-> No logs to clean!")
     elif terminal == "exit":
         print("Existing....!")
         time.sleep(1)
@@ -197,8 +206,11 @@ def main():
             header.show()
             main()
         elif terminal == "clean":
-            shutil.rmtree("{}/log".format(os.getcwd()))
-            print("-> Clean logs successfully!")
+            try:
+                shutil.rmtree("{}/log".format(os.getcwd()))
+                print("-> Clean logs successfully!")
+            except FileNotFoundError:
+                print("-> No logs to clean!")
         elif terminal == "exit":
             print("Existing....!")
             time.sleep(1)
