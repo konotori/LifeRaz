@@ -109,6 +109,7 @@ def json_api(url):
 
 def info_gathering(url):
     global version
+    global server
     rq = session.get(url, timeout=10, verify=False)
     server = rq.headers['Server']
     version = rq.headers.get('Liferay-Portal')
@@ -128,11 +129,13 @@ def info_gathering(url):
                     print("")
                     return False
                 else:
-                    print('\033[94m' + "\n==== Information ====")
-                    print('\033[91m' + "Sever: " + server)
-                    print('\033[91m' + "Version: " + version)
-                    print("")
                     return True
+            else:
+                return True
+        else:
+            return True
+    else:
+        return True
 
 
 class Scan:
@@ -169,6 +172,10 @@ class Scan:
             if self.url != "None" and self.mode == "sleep" or "dns":
                 # Gathering information of target
                 if info_gathering(self.url) is True:
+                    print('\033[94m' + "\n==== Information ====")
+                    print('\033[91m' + "Sever: " + server)
+                    print('\033[91m' + "Version: " + version)
+                    print("")
                     # Vulnerabilities of target
                     print('\033[94m' + "==== Vulnerabilities ====" + '\033[94m')
                     json_versions = ["6.1.0", "6.0.12", "6.1.10", "6.2.0"]
