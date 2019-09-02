@@ -202,7 +202,8 @@ class Scan:
             print("[!] Invalid Url - Url must start with http(s)!")
             logging.error("[!] Invalid Url - Url must start with http(s)!")
         except Exception as ex:
-            print("[!] Something get error see the log file!")
+            # print("[!] Something get error see the log file!")
+            print(ex)
             logging.error(ex)
 
 # Generate scan object
